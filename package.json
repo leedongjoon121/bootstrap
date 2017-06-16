@@ -34,7 +34,7 @@
     "js-lint-docs": "eslint --config js/tests/.eslintrc.json assets/js/",
     "js-compile": "npm-run-all --parallel js-compile-*",
     "js-compile-bundle": "npm run rollupbuild",
-    "js-compile-plugins": "babel js/src/ --out-dir js/dist/ --source-maps",
+    "js-compile-plugins": "node ./build/build-plugins.js",
     "js-minify": "uglifyjs --compress warnings=false --mangle --output dist/js/bootstrap.min.js dist/js/bootstrap.js",
     "postjs-minify": "node build/stamp.js bootstrap.min.js",
     "js-minify-docs": "uglifyjs --compress warnings=false --mangle --comments '/^!/' --output assets/js/docs.min.js assets/js/vendor/anchor.min.js assets/js/vendor/clipboard.min.js assets/js/vendor/holder.min.js assets/js/src/application.js",
