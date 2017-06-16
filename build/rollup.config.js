@@ -1,15 +1,15 @@
-import multiEntry from 'rollup-plugin-multi-entry';
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+const multiEntry = require('rollup-plugin-multi-entry')
+const resolve = require('rollup-plugin-node-resolve')
+const babel = require('rollup-plugin-babel')
 
-export default {
-    entry: 'js/src/*.js',
-    format: 'umd',
-    moduleName: 'bootstrap',
-    plugins: [multiEntry(), resolve({
-        jsnext: true
-    }), babel({
-      exclude: 'node_modules/**',
-    })],
-    dest: 'dist/js/bootstrap.js'
-};
+module.exports = {
+  entry: 'js/src/*.js',
+  format: 'umd',
+  moduleName: 'bootstrap',
+  plugins: [multiEntry(), resolve({
+    jsnext: true
+  }), babel({
+    exclude: 'node_modules/**'
+  })],
+  dest: 'dist/js/bootstrap.js'
+}

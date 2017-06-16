@@ -5,38 +5,44 @@ if (process.argv.length < 3) {
 
 const file = `dist/js/${process.argv[2]}`
 const isMin = file.indexOf('min.js') !== -1
-if (!fs.existsSync(file)) {
-  throw new Error('File not found')
-}
 
-const contentFile = fs.readFileSync(file)
-fs.readFile('package.json', (err, data) => {
-  if (err) {
-    throw err
+fs.readFile(file, (errorJsFile, contentFile) => {
+  if (errorJsFile) {
+    throw errorJsFile
   }
 
-  const pkg = JSON.parse(data)
-  const year = new Date().getFullYear()
+  fs.readFile('package.json', (err, data) => {
+    if (err) {
+      throw err
+    }
 
-  const header = `/*!
- * Bootstrap v${pkg.version} (${pkg.homepage})
- * Copyright 2011-${year} ${pkg.author}
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+    const pkg = JSON.parse(data)
+    const year = new Date().getFullYear()
+
+    const header = `/*!
+  * Bootstrap v${pkg.version} (${pkg.homepage})
+  * Copyright 2011-${year} ${pkg.author}
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  */
   `
 
-  const stamp = `${header}
-if (typeof jQuery === 'undefined') {
-  throw new Error('Bootstrap\\'s JavaScript requires jQuery. jQuery must be included before Bootstrap\\'s JavaScript.')
-}
-
-(function ($) {
-  var version = $.fn.jquery.split(' ')[0].split('.')
-  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] >= 4)) {
-    throw new Error('Bootstrap\\'s JavaScript requires at least jQuery v1.9.1 but less than v4.0.0')
+    const stamp = `${header}
+  if (typeof jQuery === 'undefined') {
+    throw new Error('Bootstrap\\'s JavaScript requires jQuery. jQuery must be included before Bootstrap\\'s JavaScript.')
   }
-})(jQuery);
-`
-  content = (!isMin) ? `${stamp}${contentFile}` : `${header}${contentFile}`
-  fs.writeFileSync(file, content)
+
+  (function ($) {
+    var version = $.fn.jquery.split(' ')[0].split('.')
+    if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] >= 4)) {
+      throw new Error('Bootstrap\\'s JavaScript requires at least jQuery v1.9.1 but less than v4.0.0')
+    }
+  })(jQuery);
+  `
+    const content = !isMin ? `${stamp}${contentFile}` : `${header}${contentFile}`
+    fs.writeFile(file, content, (err) => {
+      if (err) {
+        throw err
+      }
+    })
+  })
 })
